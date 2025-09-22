@@ -11,7 +11,7 @@ class Worker:
         self.processor = Processor()
         self.model = Model()
 
-    def start(self):
+    def start(self) -> None:
         data = self.client.get_data("input_data")
         processed_data = self.processor.process(data)
         scored_data = self.model.predict(processed_data)
