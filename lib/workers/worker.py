@@ -16,4 +16,3 @@ class Worker:
         processed_data = self.processor.process(data)
         scored_data = self.model.predict(processed_data)
         self.client.save_data(scored_data, "output_data")
-

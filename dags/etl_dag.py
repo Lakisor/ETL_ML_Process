@@ -10,12 +10,12 @@ default_args = {
 }
 
 with DAG(
-        dag_id="etl_pipeline",
-        default_args=default_args,
-        description="Run ETL process inside Docker container",
-        schedule_interval="0 0 * * *",  # каждый день в 00:00
-        start_date=datetime(2025, 1, 1),
-        catchup=False,
+    dag_id="etl_pipeline",
+    default_args=default_args,
+    description="Run ETL process inside Docker container",
+    schedule_interval="0 0 * * *",  # каждый день в 00:00
+    start_date=datetime(2025, 1, 1),
+    catchup=False,
 ) as dag:
     etl_task = DockerOperator(
         task_id="run_etl_container",
@@ -29,7 +29,7 @@ with DAG(
             Mount(
                 source="/Users/lokisor/Programming/pet_projects/etl_process/data",
                 target="/app/data",
-                type="bind"
+                type="bind",
             )
         ],
     )
