@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+
+logs/
+dags/__pycache__/
+
+*.log
+*.pid
+
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
