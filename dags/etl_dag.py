@@ -19,16 +19,16 @@ with DAG(
 ) as dag:
     etl_task = DockerOperator(
         task_id="run_etl_container",
-        image="etl_process:latest",  # имя образа из Makefile
+        image="etl_process:latest",
         api_version="auto",
-        auto_remove=True,  # контейнер удаляется после завершения
-        command="uv run python main.py",  # команда запуска
+        auto_remove=True,
+        command="uv run python main.py",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
         mounts=[
             Mount(
-                source="/Users/lokisor/Programming/pet_projects/etl_process/data",  # абсолютный путь на хосте
-                target="/app/data",  # куда монтировать в контейнер
+                source="/Users/lokisor/Programming/pet_projects/etl_process/data",
+                target="/app/data",
                 type="bind"
             )
         ],

@@ -8,6 +8,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  postgres_etl:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: etl_user
+      POSTGRES_PASSWORD: etl_pass
+      POSTGRES_DB: etl_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_etl_data:/var/lib/postgresql/data
+    restart: always
+
   airflow-webserver:
     image: apache/airflow:2.9.0
     restart: always
@@ -45,3 +57,4 @@ services:
 
 volumes:
   postgres_data:
+  postgres_etl_data:

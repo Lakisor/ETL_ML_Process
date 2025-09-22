@@ -1,13 +1,14 @@
 import pandas as pd
+from sqlalchemy import create_engine
 
 
 class Client:
-    def __init__(self, raw_data, output_data):
-        self.raw_data_path = raw_data
-        self.output_data_path = output_data
+    def __init__(self, database_url):
+        self.engine = create_engine(database_url)
 
-    def get_data(self):
-        return pd.read_csv(self.raw_data_path)
+    def get_data(self, table_name: str = "input_data") -> pd.DataFrame:
+        query = f"SELECT * FROM {table_name};"
+        return pd.read_sql(query, self.engine)
 
-    def save_data(self, data):
-        data.to_csv(self.output_data_path, index=False)
+    def save_data(self, data: pd.DataFrame, table_name: str = "output_data"):
+        data.to_sql(table_name, self.engine, if_exists="replace", index=False)
