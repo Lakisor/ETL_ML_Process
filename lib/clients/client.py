@@ -28,12 +28,14 @@ class Client:
         return pd.read_sql(query, self.engine)
 
     def save_data(self, batch: OutputBatch, table_name: str = "output_data") -> None:
-        df = pd.DataFrame([
-            {
-                "text": record.text,
-                "score": record.score,
-                "prediction": record.prediction
-            }
-            for record in batch.records
-        ])
+        df = pd.DataFrame(
+            [
+                {
+                    "text": record.text,
+                    "score": record.score,
+                    "prediction": record.prediction,
+                }
+                for record in batch.records
+            ]
+        )
         df.to_sql(table_name, self.engine, if_exists="replace", index=False)

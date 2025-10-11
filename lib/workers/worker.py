@@ -19,7 +19,9 @@ class Worker:
         data = self.client.get_data("input_data")
         results = []
         for _, record in data.iterrows():
-            processed_record = self.processor.preprocess(InputData(data=str(record['text'])))
+            processed_record = self.processor.preprocess(
+                InputData(data=str(record["text"]))
+            )
             score = self.model.predict(ProcessedData(data=processed_record.data))
             prediction = self.processor.postprocess(OutputData(score=score.score))
 
