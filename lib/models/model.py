@@ -3,6 +3,8 @@ import torch
 import pandas as pd
 from transformers import BertForSequenceClassification, BertTokenizer
 
+from lib.dto import OutputData, ProcessedData
+
 
 class Model:
     def __init__(self, model_path="data/bert_model", model_name="bert-base-uncased"):
@@ -16,12 +18,15 @@ class Model:
         self.model.eval()
 
     @torch.no_grad()
-    def predict(self, data: pd.DataFrame, text_column="text") -> pd.DataFrame:
+    def predict(self, input_data: ProcessedData) -> OutputData:
         inputs = self.tokenizer(
-            data[text_column].tolist(), padding=True, truncation=True, return_tensors="pt"
+            input_data.data,
+            padding=True,
+            truncation=True,
+            return_tensors="pt"
         )
         outputs = self.model(**inputs)
-        scores = torch.nn.functional.softmax(outputs.logits, dim=1)[:, 1].numpy()
-        data = data.copy()
-        data["score"] = scores.round(3)
-        return data
+
+        score = round(torch.nn.functional.softmax(outputs.logits, dim=1)[:, 1].item(), 3)
+
+        return OutputData(score=score)
