@@ -4,7 +4,10 @@ build:
 	docker build -t $(IMAGE_NAME) .
 
 run:
-	docker run --rm -v $(PWD)/data:/app/data $(IMAGE_NAME)
+	docker run --rm \
+	  --network pet_projects_default \
+	  -v $(PWD)/data:/app/data \
+	  etl_process
 
 shell:
 	docker run -it --rm -v $(PWD)/data:/app/data $(IMAGE_NAME) bash
