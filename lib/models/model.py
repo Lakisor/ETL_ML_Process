@@ -1,11 +1,37 @@
-import numpy as np
+import os
+import torch
 import pandas as pd
+from transformers import BertForSequenceClassification, BertTokenizer
+
+from lib.dto import OutputData, ProcessedData
 
 
 class Model:
-    @staticmethod
-    def predict(data: pd.DataFrame) -> pd.DataFrame:
-        data = data.copy()
-        scores = np.random.normal(loc=0, scale=1, size=data.shape[0])
-        data["score"] = scores.round(2)
-        return data
+    def __init__(self, model_path="data/bert_model", model_name="bert-base-uncased"):
+        self.tokenizer = None
+        self.model = None
+
+        if not os.path.exists(model_path):
+            os.makedirs(model_path, exist_ok=True)
+            BertForSequenceClassification.from_pretrained(model_name).save_pretrained(
+                model_path
+            )
+            BertTokenizer.from_pretrained(model_name).save_pretrained(model_path)
+
+    def load_model(self, model_path="data/bert_model"):
+        self.model = BertForSequenceClassification.from_pretrained(model_path)
+        self.tokenizer = BertTokenizer.from_pretrained(model_path)
+        self.model.eval()
+
+    @torch.no_grad()
+    def predict(self, input_data: ProcessedData) -> OutputData:
+        inputs = self.tokenizer(
+            input_data.data, padding=True, truncation=True, return_tensors="pt"
+        )
+        outputs = self.model(**inputs)
+
+        score = round(
+            torch.nn.functional.softmax(outputs.logits, dim=1)[:, 1].item(), 3
+        )
+
+        return OutputData(score=score)
