@@ -15,6 +15,7 @@ class Worker:
         self.model = Model()
 
     def start(self) -> None:
+        self.model.load_model(model_path="data/bert_model")
         self.client.csv_to_db()
         data = self.client.get_data("input_data")
         results = []

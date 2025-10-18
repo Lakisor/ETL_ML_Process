@@ -8,6 +8,9 @@ from lib.dto import OutputData, ProcessedData
 
 class Model:
     def __init__(self, model_path="data/bert_model", model_name="bert-base-uncased"):
+        self.tokenizer = None
+        self.model = None
+
         if not os.path.exists(model_path):
             os.makedirs(model_path, exist_ok=True)
             BertForSequenceClassification.from_pretrained(model_name).save_pretrained(
@@ -15,6 +18,7 @@ class Model:
             )
             BertTokenizer.from_pretrained(model_name).save_pretrained(model_path)
 
+    def load_model(self, model_path="data/bert_model"):
         self.model = BertForSequenceClassification.from_pretrained(model_path)
         self.tokenizer = BertTokenizer.from_pretrained(model_path)
         self.model.eval()
